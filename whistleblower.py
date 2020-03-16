@@ -3,6 +3,11 @@ from __future__ import unicode_literals
 import os
 import sys
 import redis
+import psycopg2
+
+conn = psycopg2.connect(database="d1774sms9m8gp5", user="hmrdcrywqbdvqj", password="f1219187293d8e10e69ee806cf6012787a696fb3539e0976db9f664db7112d38", host="ec2-23-22-156-110.compute-1.amazonaws.com", port="5432")
+
+cur = conn.cursor()
 
 from argparse import ArgumentParser
 
@@ -77,12 +82,20 @@ def callback():
 
 # Handler function for Text Message
 def handle_TextMessage(event):
-    print(event.message.text)
-    msg = 'You said: "' + event.message.text + '" '
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(msg)
-    )
+    #print(event.message.text)
+   #msg = 'You said: "' + event.message.text + '" '
+    cur.execute("SELECT confirmedcases FROM region WHERE rname = 'event'")
+    msg = cur.fetchall()
+    if msg is not null:
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text="The number of confirmed cases in this city is" + msg)
+        )
+    else:
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text="You may enter another region.")
+        )
 
 # Handler function for Sticker Message
 def handle_StickerMessage(event):
