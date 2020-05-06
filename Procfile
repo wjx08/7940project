@@ -1,1 +1,1 @@
-web: python whistleblower.py
+web: python bot.py
